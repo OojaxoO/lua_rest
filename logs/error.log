@@ -1,0 +1,15 @@
+2020/01/17 12:01:23 [alert] 21219#21219: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 14:09:42 [alert] 28008#28008: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 14:10:20 [alert] 28056#28056: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 14:26:05 [alert] 29412#29412: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 14:32:50 [alert] 30280#30280: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 14:33:17 [alert] 30400#30400: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 16:11:36 [alert] 3318#3318: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 16:14:46 [alert] 3519#3519: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 16:15:49 [alert] 3584#3584: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 16:36:59 [alert] 5581#5581: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 16:40:19 [alert] 5772#5772: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 16:41:56 [alert] 5861#5861: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 16:45:22 [alert] 6053#6053: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 16:56:41 [alert] 6630#6630: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
+2020/01/17 16:58:59 [alert] 6751#6751: lua_code_cache is off; this will hurt performance in /data/lapis/nginx.conf.compiled:16
