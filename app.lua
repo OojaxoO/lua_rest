@@ -5,29 +5,39 @@ local capture_errors = require("lapis.application").capture_errors
 local json_params = require("lapis.application").json_params
 local respond_to = require("lapis.application").respond_to
 
-local Users = Model:extend("users")
+local function getBody(params)
+  local newTab = {}
+  for k, v in pairs(params) do
+    if (k ~= "object" and k ~= "id") then
+       newTab[k] = v
+    end
+  end
+  return newTab
+end
 
-app:match("/user/(:id)", json_params(respond_to({
+app:match("/(:object)/(:id)", json_params(respond_to({
   before = function(self)
+    self.model = Model:extend(self.params.object)
     self.id = self.params.id
   end,
   GET = function(self)
-    local users
+    local data
     if (self.id ~= nil) then
-       users = Users:find(self.id)
+       data = self.model:find(self.id)
     else
-       users = Users:select()
+       data = self.model:select()
     end
     return {
-	     json = users
+	     json = data 
 	   }
   end,
   POST = function(self)
+    local body = getBody(self.params) 
     if (self.id ~= nil) then
-        local user = Users:find(self.id) 
-	user:update(self.params)
+        local data = self.model:find(self.id) 
+	data:update(body)
     else
-  	Users:create(self.params)
+        self.model:create(body)
     end
     return {
              json = "ok" 
@@ -35,9 +45,9 @@ app:match("/user/(:id)", json_params(respond_to({
   end,
   DELETE = function(self)
     if (self.id ~= nil) then
-       users = Users:find(self.id)
-       if users then
-       	 users:delete()       
+       local data = self.model:find(self.id)
+       if data then
+       	 data:delete()       
        end
     end 
     return {

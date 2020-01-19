@@ -3,7 +3,7 @@ local types = schema.types
 
 return {
   [1] = function()
-    schema.create_table("users", {
+    schema.create_table("user", {
       {"id", types.id},
       {"name", types.varchar({ unique = true })},
       {"password", types.varchar},
