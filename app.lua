@@ -25,7 +25,10 @@ app:match("/(:object)/(:id)", json_params(respond_to({
     if (self.id ~= nil) then
        data = self.model:find(self.id)
     else
-       data = self.model:select()
+       local size = self.params.page_size or 6 
+       local page = self.params.page or 1 
+       local paginated = self.model:paginated({per_page = tonumber(size)})
+       data = paginated:get_page(page)
     end
     return {
 	     json = data 
