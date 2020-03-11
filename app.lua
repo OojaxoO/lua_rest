@@ -15,6 +15,30 @@ local function getBody(params)
   return newTab
 end
 
+app:match("/login/", json_params(respond_to({
+  before = function(self)
+    if self.session.user then
+      self.current_user = self.session.user 
+    end
+  end,
+  POST = function(self)
+    if self.current_user then
+      return {
+        json = self.current_user
+      }
+    end
+    local body = self.params
+    local User = Model:extend("user")
+    local user = User:find(body)
+    if not user then
+        return {status=404}
+    end
+    self.session.user = user 
+    return {
+      json = user 
+    }
+end})))
+
 app:match("/(:object)/(:id)", json_params(respond_to({
   before = function(self)
     self.model = Model:extend(self.params.object)
