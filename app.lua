@@ -1,9 +1,13 @@
 local lapis = require("lapis")
+local date = require("date")
 local app = lapis.Application()
 local Model = require("lapis.db.model").Model
 local capture_errors = require("lapis.application").capture_errors
 local json_params = require("lapis.application").json_params
 local respond_to = require("lapis.application").respond_to
+local url = require("socket.url")
+local config = require("lapis.config").get()
+local encode_session = require("lapis.session").encode_session
 
 local function getBody(params)
   local newTab = {}
@@ -15,16 +19,17 @@ local function getBody(params)
   return newTab
 end
 
-app:match("/login/", json_params(respond_to({
+app:match("login", "/login/", json_params(respond_to({
   before = function(self)
     if self.session.user then
       self.current_user = self.session.user 
     end
   end,
   POST = function(self)
+    -- local cookie = self.cookies[config.session_name]
     if self.current_user then
       return {
-        json = self.current_user
+        json = self.current_user 
       }
     end
     local body = self.params
@@ -41,18 +46,26 @@ end})))
 
 app:match("/(:object)/(:id)", json_params(respond_to({
   before = function(self)
-    self.model = Model:extend(self.params.object)
     self.id = self.params.id
+    local method = ngx.var.request_method
+    if not self.session.user and method == "POST" and self.id == nil then
+      self:write({"请先登录", status = 401})
+    end
+    self.model = Model:extend(self.params.object)
   end,
   GET = function(self)
     local data
     if (self.id ~= nil) then
        data = self.model:find(self.id)
     else
+       local count = self.model:count()
        local size = self.params.page_size or 6 
        local page = self.params.page or 1 
        local paginated = self.model:paginated({per_page = tonumber(size)})
-       data = paginated:get_page(page)
+       data = {
+	count=tonumber(count),
+        result=paginated:get_page(page)
+       }
     end
     return {
 	     json = data 
