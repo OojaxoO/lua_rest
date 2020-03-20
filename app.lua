@@ -44,13 +44,14 @@ app:match("login", "/login/", json_params(respond_to({
     }
 end})))
 
-app:match("/(:object)/(:id)", json_params(respond_to({
+app:match("/api/(:object)/(:id)", json_params(respond_to({
   before = function(self)
+    ngx.header.content_type = "text/html;charset=utf8"
     self.id = self.params.id
-    local method = ngx.var.request_method
-    if not self.session.user and method == "POST" and self.id == nil then
-      self:write({"请先登录", status = 401})
-    end
+    -- local method = ngx.var.request_method
+    -- if not self.session.user and method == "POST" and self.id == nil then
+    --   self:write({"请先登录", status = 401})
+    -- end
     self.model = Model:extend(self.params.object)
   end,
   GET = function(self)
@@ -58,13 +59,23 @@ app:match("/(:object)/(:id)", json_params(respond_to({
     if (self.id ~= nil) then
        data = self.model:find(self.id)
     else
-       local count = self.model:count()
        local size = self.params.page_size or 6 
        local page = self.params.page or 1 
-       local paginated = self.model:paginated({per_page = tonumber(size)})
+       local search = self.params.search
+       local search_field = self.params.search_field
+       local paginated
+       local count
+       if (search ~= nil) then
+       	   paginated = self.model:paginated("where ".. search_field .. "=? order by time desc", search, {per_page = tonumber(size)}) 
+           count = self.model:count(search_field .. "=" .. ngx.quote_sql_str(search))
+       else
+       	   paginated = self.model:paginated({per_page = tonumber(size)}) 
+           count = self.model:count()
+       end
+       -- local count = paginated:total_items()
        data = {
-	count=tonumber(count),
-        result=paginated:get_page(page)
+	   count=tonumber(count),
+           result=paginated:get_page(page)
        }
     end
     return {
